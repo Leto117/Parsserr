@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegram Proxy</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Telegram Proxy</h1>
+    </header>
+
+    <!-- HTTP / SOCKS5 -->
+    <section class="section">
+      <div class="section-header">
+        <h2>HTTP / SOCKS5</h2>
+        <div class="status" id="status">
+          <span class="dot" id="statusDot"></span>
+          <span id="statusText">Остановлено</span>
+        </div>
+      </div>
+      <div id="counter" class="counter" style="display:none">
+        Найдено: <span id="foundCount">0</span>/5 | Обновление каждые 2 мин
+      </div>
+      <div class="proxy-list" id="proxyList">
+        <div class="proxy-card placeholder">Нет прокси. Нажмите «Старт» для поиска.</div>
+      </div>
+      <div class="actions">
+        <button id="startBtn" class="btn primary">Старт</button>
+        <button id="stopBtn" class="btn danger" disabled>Стоп</button>
+        <button id="refreshBtn" class="btn secondary">Обновить</button>
+      </div>
+    </section>
+
+    <!-- MTProto -->
+    <section class="section">
+      <div class="section-header">
+        <h2>MTProto</h2>
+        <div class="status" id="mtStatus">
+          <span class="dot" id="mtDot"></span>
+          <span id="mtStatusText">Остановлено</span>
+        </div>
+      </div>
+      <div id="mtCounter" class="counter" style="display:none">
+        Найдено: <span id="mtFoundCount">0</span>/5
+      </div>
+      <div class="proxy-list" id="mtProxyList">
+        <div class="proxy-card placeholder">Нет MTProto прокси. Источники временно недоступны.</div>
+      </div>
+      <div class="actions">
+        <button id="mtStartBtn" class="btn primary">Поиск MTProto</button>
+        <button id="mtStopBtn" class="btn danger" disabled>Стоп</button>
+        <button id="mtRefreshBtn" class="btn secondary">Обновить</button>
+      </div>
+    </section>
+
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "telegram-proxy-checker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Telegram proxy checker - парсер и верификатор прокси",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "express": "^4.19.0",
+    "https-proxy-agent": "^7.0.5",
+    "socks-proxy-agent": "^8.0.4"
+  }
+}
