@@ -30,16 +30,11 @@ function getText(url, timeout = 15000) {
 
 const RAW_URLS = [
   'https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=all',
-  'https://api.proxyscrape.com/v2/?request=displayproxies&protocol=socks5&timeout=10000&country=all',
   'https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt',
-  'https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/socks5.txt',
   'https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt',
-  'https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/socks5.txt',
   'https://raw.githubusercontent.com/almroot/proxylist/master/list.txt',
   'https://api.openproxylist.xyz/http.txt',
-  'https://api.openproxylist.xyz/socks5.txt',
   'https://www.proxy-list.download/api/v1/get?type=http',
-  'https://www.proxy-list.download/api/v1/get?type=socks5',
 ];
 
 const MTPROTO_SOURCES = [
@@ -61,8 +56,7 @@ async function collectProxies() {
   const results = await Promise.all(RAW_URLS.map(async (url) => {
     try {
       const text = await getText(url);
-      const type = url.includes('socks5') ? 'SOCKS5' : 'HTTP';
-      return text.split('\n').map(l => l.trim()).filter(isIpPort).map(p => ({ proxy: p, type }));
+      return text.split('\n').map(l => l.trim()).filter(isIpPort).map(p => ({ proxy: p, type: 'HTTP' }));
     } catch { return []; }
   }));
   const seen = new Set();
@@ -134,21 +128,6 @@ function tcpPing(host, port, ms = 3000) {
   });
 }
 
-async function checkSocks5(host, port, ms = 5000) {
-  const start = Date.now();
-  return new Promise(r => {
-    const s = new net.Socket();
-    let done = false;
-    const timer = setTimeout(() => { if (!done) { done = true; s.destroy(); r({ ok: false, ping: 0 }); } }, ms);
-    const finish = ok => { if (done) return; done = true; clearTimeout(timer); s.destroy(); r({ ok, ping: Date.now() - start }); };
-    s.on('connect', () => s.write(Buffer.from([0x05, 0x01, 0x00])));
-    s.on('data', d => finish(d.length >= 2 && d[0] === 5 && d[1] === 0));
-    s.on('error', () => finish(false));
-    s.on('timeout', () => finish(false));
-    s.connect(port, host);
-  });
-}
-
 async function checkHttp(host, port, ms = 5000) {
   const start = Date.now();
   return new Promise(r => {
@@ -192,10 +171,6 @@ async function checkProxy(entry) {
     const p = parseInt(port, 10);
     const tcp = await tcpPing(host, p);
     if (!tcp.ok) return null;
-    if (entry.type === 'SOCKS5') {
-      const res = await checkSocks5(host, p);
-      return res.ok ? { ...entry, ping: Date.now() - t0 } : null;
-    }
     const res = await checkHttp(host, p);
     return res.ok ? { ...entry, ping: Date.now() - t0 } : null;
   } catch {
@@ -211,12 +186,12 @@ async function refreshProxies() {
     const batch = all.slice(0, 80);
     const MAX = 15;
     const working = [];
-    for (let i = 0; i < batch.length && working.length < 5; i += MAX) {
+    for (let i = 0; i < batch.length && working.length < 10; i += MAX) {
       const chunk = batch.slice(i, i + MAX);
       console.log(`[Proxy] Batch ${i / MAX + 1}...`);
       const results = await Promise.all(chunk.map(checkProxy));
       for (const r of results) {
-        if (r && working.length < 5) { working.push(r); console.log(`[Proxy] OK ${r.type} ${r.proxy} ${r.ping}ms`); }
+        if (r && working.length < 10) { working.push(r); console.log(`[Proxy] OK ${r.type} ${r.proxy} ${r.ping}ms`); }
       }
     }
     if (working.length > 0 || verifiedProxies.length === 0) verifiedProxies = working.length > 0 ? working : verifiedProxies;
@@ -232,7 +207,7 @@ async function refreshMTProto() {
     const batch = all.slice(0, 20);
     const MAX = 20;
     const working = [];
-    for (let i = 0; i < batch.length && working.length < 5; i += MAX) {
+    for (let i = 0; i < batch.length && working.length < 10; i += MAX) {
       const chunk = batch.slice(i, i + MAX);
       console.log(`[MTProto] Batch ${i / MAX + 1}...`);
       const results = await Promise.all(chunk.map(async (e) => {
@@ -244,7 +219,7 @@ async function refreshMTProto() {
         } catch { return null; }
       }));
       for (const r of results) {
-        if (r && working.length < 5) { working.push(r); console.log(`[MTProto] OK ${r.proxy} ${r.ping}ms`); }
+        if (r && working.length < 10) { working.push(r); console.log(`[MTProto] OK ${r.proxy} ${r.ping}ms`); }
       }
     }
     if (working.length > 0 || mtProtoProxies.length === 0) mtProtoProxies = working.length > 0 ? working : mtProtoProxies;

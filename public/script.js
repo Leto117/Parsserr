@@ -17,8 +17,19 @@ function renderList(list, proxies) {
     return;
   }
   list.innerHTML = proxies.map(p => {
-    const status = p.ping > 0 ? '<span class="proxy-status ok">&#10003;</span>' : '<span class="proxy-status fail">&#10007;</span>';
     const pingText = p.ping ? p.ping + 'ms' : '—';
+    if (p.type === 'MTProto') {
+      const [host, port] = p.proxy.split(':');
+      return `<div class="proxy-card mtproto-card">
+        <div class="mtproto-info">
+          <span class="proxy-addr">${host}:${port}</span>
+          <span class="proxy-secret" title="Secret">Secret: ${p.secret}</span>
+        </div>
+        <span class="proxy-status ok">&#10003;</span>
+        <span class="proxy-ping">${pingText}</span>
+        <button class="copy-btn" data-proxy="${p.link || p.proxy}">Копировать</button>
+      </div>`;
+    }
     return `<div class="proxy-card">
       <span class="proxy-addr">${p.proxy}</span>
       <span class="proxy-type ${p.type}">${p.type}</span>

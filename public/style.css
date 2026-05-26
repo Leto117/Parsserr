@@ -139,7 +139,6 @@ h2 {
 }
 
 .proxy-type.HTTP { color: #60a5fa; }
-.proxy-type.SOCKS5 { color: #4ade80; }
 .proxy-type.MTProto { color: #f59e0b; }
 
 .proxy-ping {
@@ -161,6 +160,10 @@ h2 {
 
 .proxy-status.ok { color: #4ade80; }
 .proxy-status.fail { color: #ef4444; }
+
+.mtproto-card { flex-wrap: wrap; gap: 4px 10px; }
+.mtproto-info { display: flex; flex-direction: column; gap: 2px; min-width: 180px; flex: 1; }
+.proxy-secret { font-size: 11px; color: #f59e0b; font-family: 'SF Mono', 'Consolas', monospace; word-break: break-all; }
 
 .copy-btn {
   background: transparent;

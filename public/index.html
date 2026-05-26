@@ -12,20 +12,20 @@
       <h1>Telegram Proxy</h1>
     </header>
 
-    <!-- HTTP / SOCKS5 -->
+    <!-- HTTP -->
     <section class="section">
       <div class="section-header">
-        <h2>HTTP / SOCKS5</h2>
+        <h2>HTTP</h2>
         <div class="status" id="status">
           <span class="dot" id="statusDot"></span>
           <span id="statusText">Остановлено</span>
         </div>
       </div>
       <div id="counter" class="counter" style="display:none">
-        Найдено: <span id="foundCount">0</span>/5 | Обновление каждые 2 мин
+        Найдено: <span id="foundCount">0</span>/10 | Обновление каждые 2 мин
       </div>
       <div class="proxy-list" id="proxyList">
-        <div class="proxy-card placeholder">Нет прокси. Нажмите «Старт» для поиска.</div>
+        <div class="proxy-card placeholder">Нет HTTP прокси. Нажмите «Старт» для поиска.</div>
       </div>
       <div class="actions">
         <button id="startBtn" class="btn primary">Старт</button>
@@ -44,10 +44,10 @@
         </div>
       </div>
       <div id="mtCounter" class="counter" style="display:none">
-        Найдено: <span id="mtFoundCount">0</span>/5
+        Найдено: <span id="mtFoundCount">0</span>/10
       </div>
       <div class="proxy-list" id="mtProxyList">
-        <div class="proxy-card placeholder">Нет MTProto прокси. Источники временно недоступны.</div>
+        <div class="proxy-card placeholder">Нет MTProto прокси. Нажмите «Поиск MTProto» для поиска.</div>
       </div>
       <div class="actions">
         <button id="mtStartBtn" class="btn primary">Поиск MTProto</button>
